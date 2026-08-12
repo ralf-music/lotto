@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffd400">
+  <title>Lotto Zentrale</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <div class="brand-kicker">MEINE</div>
+      <h1>LOTTO ZENTRALE</h1>
+      <p>Generator, Statistik und Ziehungen an einem Ort.</p>
+    </div>
+    <button class="version-badge" id="versionButton" type="button">v1.0.0</button>
+  </header>
+
+  <main class="shell">
+    <section class="hero-card">
+      <div class="game-switch" role="tablist" aria-label="Lotterie auswählen">
+        <button class="game-tab active" data-game="lotto" type="button">LOTTO 6aus49</button>
+        <button class="game-tab" data-game="eurojackpot" type="button">EUROJACKPOT</button>
+      </div>
+
+      <div class="draw-card">
+        <div>
+          <span class="eyebrow">AKTUELLE ZIEHUNG</span>
+          <h2 id="drawTitle">LOTTO 6aus49</h2>
+          <div id="latestDrawDate" class="muted">Daten werden geladen…</div>
+        </div>
+        <div id="latestNumbers" class="ball-row"></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel generator-panel">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">DEIN TIPPSCHEIN</span>
+            <h2>Generator</h2>
+          </div>
+          <button id="generateButton" class="primary" type="button">Tipps generieren</button>
+        </div>
+
+        <div class="controls">
+          <label class="control">
+            <span>Anzahl Tipps</span>
+            <div class="stepper">
+              <button id="tipsMinus" type="button">−</button>
+              <strong id="tipsCount">6</strong>
+              <button id="tipsPlus" type="button">+</button>
+            </div>
+          </label>
+
+          <label class="control">
+            <span>Statistik-Einfluss <strong id="weightValue">65 %</strong></span>
+            <input id="statWeight" type="range" min="0" max="100" step="5" value="65">
+            <small>0 % = reiner Zufall, 100 % = starke Bevorzugung historisch häufiger Zahlen.</small>
+          </label>
+
+          <label class="control">
+            <span>Zahlenverteilung</span>
+            <select id="spreadMode">
+              <option value="normal">Normal</option>
+              <option value="reduced" selected>Wiederholungen stark reduzieren</option>
+              <option value="unique">Möglichst keine Wiederholungen</option>
+            </select>
+          </label>
+
+          <div class="toggle-list">
+            <label><input id="avoidSequences" type="checkbox" checked> 2er-Zahlenfolgen vermeiden</label>
+            <label><input id="avoidPatterns" type="checkbox" checked> Auffällige Zahlenmuster vermeiden</label>
+            <label><input id="balanceParity" type="checkbox" checked> Gerade/Ungerade ausgewogen</label>
+            <label><input id="balanceRange" type="checkbox" checked> Niedrige/hohe Zahlen ausgewogen</label>
+          </div>
+        </div>
+
+        <div class="ticket-actions">
+          <button id="regenerateUnlocked" class="secondary" type="button">Nicht fixierte neu</button>
+          <button id="unlockAll" class="ghost" type="button">Alle entsperren</button>
+        </div>
+
+        <div id="tipsContainer" class="tips-container"></div>
+
+        <div class="disclaimer">
+          Historische Häufigkeit verändert die mathematische Gewinnchance der nächsten Ziehung nicht. Die Gewichtung dient nur als persönliche Tippstrategie.
+        </div>
+      </article>
+
+      <aside class="panel stats-panel">
+        <div class="panel-head compact">
+          <div>
+            <span class="eyebrow">STATISTIK</span>
+            <h2>Häufig gezogene Zahlen</h2>
+          </div>
+        </div>
+        <div class="stats-tabs">
+          <button class="stats-tab active" data-stat="hot" type="button">Hot</button>
+          <button class="stats-tab" data-stat="normal" type="button">Normal</button>
+          <button class="stats-tab" data-stat="cold" type="button">Cold</button>
+        </div>
+        <div id="statsGrid" class="stats-grid"></div>
+        <p class="stats-note" id="statsNote"></p>
+      </aside>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">ARCHIV</span>
+          <h2>Letzte 5 Ziehungen</h2>
+        </div>
+        <button id="refreshData" class="secondary" type="button">Daten aktualisieren</button>
+      </div>
+      <div id="historyList" class="history-list"></div>
+      <div id="dataStatus" class="data-status"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Lotto Zentrale</span>
+    <span>Keine Glücksspielberatung · Teilnahme ab 18</span>
+  </footer>
+
+  <dialog id="changelogDialog">
+    <div class="dialog-head">
+      <div>
+        <span class="eyebrow">VERSION</span>
+        <h2>Changelog</h2>
+      </div>
+      <button id="closeChangelog" class="dialog-close" type="button">×</button>
+    </div>
+    <div class="changelog-entry">
+      <strong>v1.0.0</strong>
+      <span>12.08.2026</span>
+      <ul>
+        <li>LOTTO 6aus49 und Eurojackpot Generator</li>
+        <li>1 bis 6 Tipps pro Generierung</li>
+        <li>Einstellbare Statistik-Gewichtung</li>
+        <li>Wiederholungen zwischen Tipps reduzieren oder vermeiden</li>
+        <li>2er-Zahlenfolgen und auffällige Muster filtern</li>
+        <li>Gerade/Ungerade- und Hoch/Niedrig-Balance</li>
+        <li>Hot/Normal/Cold Statistikübersicht</li>
+        <li>Aktuelle und letzte fünf Ziehungen über Datenmodul</li>
+        <li>Einzelne Tipps fixieren und übrige neu generieren</li>
+        <li>Einstellungen werden lokal gespeichert</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
