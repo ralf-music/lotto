@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Lotto Zentrale">
+<rect width="128" height="128" rx="28" fill="#ffd600"/>
+<g fill="#e30613">
+  <circle cx="45" cy="42" r="18"/><circle cx="77" cy="32" r="13"/><circle cx="89" cy="62" r="15"/>
+  <circle cx="54" cy="78" r="20"/><circle cx="91" cy="91" r="10"/>
+</g>
+<circle cx="68" cy="57" r="8" fill="#ffd600"/>
+</svg>

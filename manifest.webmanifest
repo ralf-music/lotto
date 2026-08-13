@@ -1,0 +1,9 @@
+{
+  "name":"Lotto Zentrale",
+  "short_name":"Lotto",
+  "start_url":"/",
+  "display":"standalone",
+  "background_color":"#fffdf2",
+  "theme_color":"#ffd600",
+  "icons":[{"src":"/logo.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

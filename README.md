@@ -1,37 +1,26 @@
-# Lotto Zentrale v1.0.0
+# Lotto Zentrale v1.1.0
 
-Statische HTML/CSS/JavaScript-Webseite mit Netlify Function für Live-Ziehungsdaten.
+Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 
-## Enthalten
-- LOTTO 6aus49 Generator
-- Eurojackpot Generator
-- 1–6 Tipps
-- Statistik-Einfluss 0–100 %
-- Wiederholungen zwischen Tipps reduzieren / vermeiden
-- 2er-Zahlenfolgen vermeiden
-- Musterfilter
-- Gerade/Ungerade- und Hoch/Niedrig-Balance
-- Tipp-Fixierung
-- Hot/Normal/Cold Übersicht
-- aktuelle + letzte 5 Ziehungen UI
-- lokale Speicherung der Einstellungen
-- Versionsanzeige + Changelog
+## Neu in v1.1.0
+- vollständiges Dashboard-Redesign
+- SVG-Logo + Favicon + Web-App-Manifest
+- beide Lotterien mit ihren zwei Wochenziehungen sichtbar
+- LOTTO-6aus49-Liveparser überarbeitet
+- mobile Ansicht neu aufgebaut
+- Zahlenfolgenfilter: aus / 2er vermeiden / nur längere vermeiden
 
 ## Dateien
 - index.html
 - styles.css
 - app.js
+- logo.svg
+- favicon.svg
+- manifest.webmanifest
 - netlify.toml
 - netlify/functions/lotto-data.js
+- README.md
 
-## Netlify
-Ordnerinhalt unverändert in ein GitHub-Repository legen und mit Netlify deployen.
-Die Function ist unter `/.netlify/functions/lotto-data` erreichbar.
-
-## Hinweis zu V1
-Die aktuelle Ziehung wird über offizielle Webseiten abgefragt. Historische Häufigkeitswerte
-sind in V1 als lokale, leicht gewichtete Fallback-Werte eingebaut. Die Architektur ist so
-getrennt, dass in einem Folgeupdate ein stabiler Statistikfeed ergänzt werden kann, ohne
-den Generator neu zu schreiben.
-
-Historische Häufigkeiten verändern die mathematische Chance einer zukünftigen Ziehung nicht.
+## Ziehungsrhythmus
+- LOTTO 6aus49: Mittwoch 18:25 Uhr und Samstag 19:25 Uhr
+- Eurojackpot: Dienstag und Freitag
