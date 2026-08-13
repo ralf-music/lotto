@@ -1,4 +1,4 @@
-# Lotto Zentrale v1.1.2
+# Lotto Zentrale v1.2.0
 
 Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 
@@ -36,3 +36,11 @@ Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 - ca. 140 Mio. Fahrzeuge × 2,70 m ≈ 378.000 km
 - Vergleich mit ca. 384.400 km mittlerer Mondentfernung
 - gleiche Jackpot-Chance 1:139.838.160 bei LOTTO 6aus49 und Eurojackpot erklärt
+
+## v1.2.0
+- ZDFtext 556/557 als Primärquelle für aktuelle LOTTO-6aus49-Ziehungen
+- WestLotto als Fallback und Jackpot-Quelle
+- Eurojackpot.de bleibt Primärquelle für Eurojackpot
+- lokale Speicherung der zuletzt geladenen Ziehungen
+- Wahrscheinlichkeitsvergleich einklappbar
+- Footer: © 2026 Lotto Zentrale by Snikki

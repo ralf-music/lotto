@@ -9,3 +9,50 @@
 .jackpot-row strong{font-size:1.25rem;color:var(--red);line-height:1.1}
 .jackpot-row b{font-size:.88rem}
 @media(max-width:430px){.jackpot-row{grid-template-columns:1fr 1fr}.jackpot-row strong{font-size:1.08rem}}
+
+.comparison-collapsible{
+  display:block;
+  padding:0;
+  overflow:hidden;
+}
+.comparison-collapsible summary{
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  cursor:pointer;
+  padding:16px 18px;
+}
+.comparison-collapsible summary::-webkit-details-marker{display:none}
+.comparison-collapsible summary span{display:grid;gap:4px}
+.comparison-collapsible summary small{
+  color:var(--muted);
+  line-height:1.4;
+  font-weight:650;
+}
+.summary-action{
+  color:var(--red);
+  white-space:nowrap;
+  font-size:.84rem;
+}
+.comparison-collapsible[open] .summary-action::after{content:""}
+.comparison-collapsible[open] .summary-action{font-size:0}
+.comparison-collapsible[open] .summary-action::before{
+  content:"Vergleich schließen";
+  font-size:.84rem;
+}
+.comparison-body{
+  padding:0 18px 16px;
+  border-top:1px solid rgba(0,0,0,.08);
+}
+.source-note{
+  padding:7px 12px 10px;
+  font-size:.68rem;
+  color:var(--muted);
+  font-weight:700;
+}
+@media(max-width:620px){
+  .comparison-collapsible summary{align-items:flex-start;flex-direction:column}
+  .summary-action{white-space:normal}
+}

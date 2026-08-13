@@ -1,9 +1,29 @@
-const VERSION="1.1.2", STORAGE_KEY="lottoZentraleSettingsV1";
+const VERSION="1.2.0", STORAGE_KEY="lottoZentraleSettingsV1", DRAW_CACHE_KEY="lottoZentraleDrawCacheV1";
 const GAME_CONFIG={lotto:{label:"LOTTO 6aus49",max:49,count:6,specialCount:0,specialMax:0},eurojackpot:{label:"EUROJACKPOT",max:50,count:5,specialCount:2,specialMax:12}};
 const FALLBACK_FREQ={lotto:Array.from({length:49},(_,i)=>({n:i+1,f:100+((i*17+11)%31)})),eurojackpot:Array.from({length:50},(_,i)=>({n:i+1,f:100+((i*13+7)%29)})),euro:Array.from({length:12},(_,i)=>({n:i+1,f:100+((i*9+3)%23)}))};
 const FALLBACK_DRAWS={lotto:[],eurojackpot:[]};
-let state={game:"lotto",tipsCount:6,statWeight:65,spreadMode:"reduced",sequenceMode:"two",avoidPatterns:true,balanceParity:true,balanceRange:true,statView:"hot",locked:new Set(),tips:[],data:structuredClone(FALLBACK_DRAWS),freq:structuredClone(FALLBACK_FREQ),jackpots:{lotto:null,eurojackpot:null}};
+let state={game:"lotto",tipsCount:6,statWeight:65,spreadMode:"reduced",sequenceMode:"two",avoidPatterns:true,balanceParity:true,balanceRange:true,statView:"hot",locked:new Set(),tips:[],data:structuredClone(FALLBACK_DRAWS),freq:structuredClone(FALLBACK_FREQ),jackpots:{lotto:null,eurojackpot:null},sources:{lotto:"",eurojackpot:""}};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function mergeDraws(current,incoming){
+  const all=[...(incoming||[]),...(current||[])],seen=new Set();
+  return all.filter(d=>{
+    const k=`${d.date}|${(d.numbers||[]).join(",")}|${(d.special||[]).join(",")}`;
+    if(seen.has(k))return false;seen.add(k);return true
+  }).sort((a,b)=>{
+    const cv=x=>{const p=String(x).split(".").map(Number);return p.length===3?new Date(p[2],p[1]-1,p[0]).getTime():0};
+    return cv(b.date)-cv(a.date)
+  }).slice(0,5)
+}
+function loadDrawCache(){
+  try{
+    const c=JSON.parse(localStorage.getItem(DRAW_CACHE_KEY)||"{}");
+    for(const g of ["lotto","eurojackpot"])if(Array.isArray(c[g]))state.data[g]=mergeDraws(state.data[g],c[g]);
+  }catch{}
+}
+function saveDrawCache(){
+  try{localStorage.setItem(DRAW_CACHE_KEY,JSON.stringify(state.data))}catch{}
+}
+
 function loadSettings(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");["tipsCount","statWeight","spreadMode","sequenceMode","avoidPatterns","balanceParity","balanceRange"].forEach(k=>{if(k in x)state[k]=x[k]})}catch{}}
 function saveSettings(){const x={};["tipsCount","statWeight","spreadMode","sequenceMode","avoidPatterns","balanceParity","balanceRange"].forEach(k=>x[k]=state[k]);localStorage.setItem(STORAGE_KEY,JSON.stringify(x))}
 function syncControls(){$("#tipsCount").textContent=state.tipsCount;$("#statWeight").value=state.statWeight;$("#weightValue").textContent=`${state.statWeight}%`;$$('input[name="spread"]').forEach(x=>x.checked=x.value===state.spreadMode);$$('input[name="sequence"]').forEach(x=>x.checked=x.value===state.sequenceMode);$("#avoidPatterns").checked=state.avoidPatterns;$("#balanceParity").checked=state.balanceParity;$("#balanceRange").checked=state.balanceRange}
@@ -40,8 +60,32 @@ function renderJackpots(){
   $("#lottoJackpot").textContent=state.jackpots.lotto?.display||"wird ermittelt";
   $("#euroJackpot").textContent=state.jackpots.eurojackpot?.display||"mind. 10 Mio. €";
 }
-function renderDraws(){const ld=(state.data.lotto||[]).slice(0,2),ed=(state.data.eurojackpot||[]).slice(0,2);$("#lottoCurrent").innerHTML=drawBlock(ld[0],'lotto')+drawBlock(ld[1],'lotto');$("#euroCurrent").innerHTML=drawBlock(ed[0],'eurojackpot')+drawBlock(ed[1],'eurojackpot');$("#lottoNext").textContent=nextDrawInfo("lotto");$("#euroNext").textContent=nextDrawInfo("eurojackpot");renderJackpots();renderHistory('lotto','#lottoHistory');renderHistory('eurojackpot','#euroHistory')}
-async function refreshLiveData(){$("#dataStatus").textContent="Live-Daten werden geprüft…";try{const r=await fetch('/.netlify/functions/lotto-data',{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);const data=await r.json();for(const g of ['lotto','eurojackpot'])if(Array.isArray(data.draws?.[g])&&data.draws[g].length)state.data[g]=data.draws[g].slice(0,5);if(data.freq)for(const k of ["lotto","eurojackpot","euro"])if(Array.isArray(data.freq[k])&&data.freq[k].length)state.freq[k]=data.freq[k];if(data.jackpots){state.jackpots.lotto=data.jackpots.lotto||state.jackpots.lotto;state.jackpots.eurojackpot=data.jackpots.eurojackpot||state.jackpots.eurojackpot;}$("#dataStatus").textContent=`Datenstand: ${data.updatedAt||"aktuell"} · Quelle: ${data.source||"offizielle Lotterie-Seiten"}`}catch(e){$("#dataStatus").textContent="Live-Daten konnten nicht geladen werden. Generator bleibt vollständig nutzbar."}renderDraws();renderStats()}
+function renderDraws(){if($("#lottoSource"))$("#lottoSource").textContent=state.sources.lotto?`Quelle: ${state.sources.lotto}`:"Quelle: ZDFtext / WestLotto";const ld=(state.data.lotto||[]).slice(0,2),ed=(state.data.eurojackpot||[]).slice(0,2);$("#lottoCurrent").innerHTML=drawBlock(ld[0],'lotto')+drawBlock(ld[1],'lotto');$("#euroCurrent").innerHTML=drawBlock(ed[0],'eurojackpot')+drawBlock(ed[1],'eurojackpot');$("#lottoNext").textContent=nextDrawInfo("lotto");$("#euroNext").textContent=nextDrawInfo("eurojackpot");renderJackpots();renderHistory('lotto','#lottoHistory');renderHistory('eurojackpot','#euroHistory')}
+async function refreshLiveData(){
+  $("#dataStatus").textContent="Live-Daten werden geprüft…";
+  try{
+    const r=await fetch('/.netlify/functions/lotto-data',{cache:'no-store'});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    for(const g of ['lotto','eurojackpot']){
+      if(Array.isArray(data.draws?.[g])&&data.draws[g].length){
+        state.data[g]=mergeDraws(state.data[g],data.draws[g]);
+      }
+    }
+    if(data.freq)for(const k of ["lotto","eurojackpot","euro"])
+      if(Array.isArray(data.freq[k])&&data.freq[k].length)state.freq[k]=data.freq[k];
+    if(data.jackpots){
+      state.jackpots.lotto=data.jackpots.lotto||state.jackpots.lotto;
+      state.jackpots.eurojackpot=data.jackpots.eurojackpot||state.jackpots.eurojackpot;
+    }
+    if(data.sources)state.sources={...state.sources,...data.sources};
+    saveDrawCache();
+    $("#dataStatus").textContent=`Datenstand: ${data.updatedAt||"aktuell"} · ${data.source||"Live-Daten"}`;
+  }catch(e){
+    $("#dataStatus").textContent="Live-Daten konnten nicht geladen werden. Bereits gespeicherte Ziehungen bleiben sichtbar.";
+  }
+  renderDraws();renderStats()
+}
 function changeGame(game){state.game=game;state.locked.clear();$$('.game-tab').forEach(b=>b.classList.toggle('active',b.dataset.game===game));renderStats();generateTips()}
 function bind(){$$('.game-tab').forEach(b=>b.onclick=()=>changeGame(b.dataset.game));$("#tipsMinus").onclick=()=>{state.tipsCount=Math.max(1,state.tipsCount-1);syncControls();saveSettings();generateTips()};$("#tipsPlus").onclick=()=>{state.tipsCount=Math.min(6,state.tipsCount+1);syncControls();saveSettings();generateTips()};$("#generateButton").onclick=()=>generateTips();$("#regenerateUnlocked").onclick=()=>generateTips(true);$("#unlockAll").onclick=()=>{state.locked.clear();renderTips()};$("#refreshData").onclick=refreshLiveData;$("#statWeight").oninput=e=>$("#weightValue").textContent=`${e.target.value}%`;$("#statWeight").onchange=e=>{state.statWeight=+e.target.value;saveSettings();generateTips()};$$('input[name="spread"]').forEach(x=>x.onchange=e=>{state.spreadMode=e.target.value;saveSettings();generateTips()});$$('input[name="sequence"]').forEach(x=>x.onchange=e=>{state.sequenceMode=e.target.value;saveSettings();generateTips()});['avoidPatterns','balanceParity','balanceRange'].forEach(id=>$("#"+id).onchange=e=>{state[id]=e.target.checked;saveSettings();generateTips()});$$('.stats-tab').forEach(b=>b.onclick=()=>{state.statView=b.dataset.stat;$$('.stats-tab').forEach(x=>x.classList.toggle('active',x===b));renderStats()});const open=()=>$("#changelogDialog").showModal();$("#versionButton").onclick=open;$("#footerVersion").onclick=open;$("#closeChangelog").onclick=()=>$("#changelogDialog").close();$$('[data-scroll]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'}))}
-loadSettings();syncControls();bind();generateTips();renderStats();renderDraws();refreshLiveData();
+loadSettings();loadDrawCache();syncControls();bind();generateTips();renderStats();renderDraws();refreshLiveData();
