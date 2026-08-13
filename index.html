@@ -22,7 +22,7 @@
   <div class="top-actions">
     <button class="nav-action" data-scroll="statsPanel" type="button"><span>▥</span>Statistik</button>
     <button class="nav-action" data-scroll="responsiblePanel" type="button"><span>?</span>Hilfe</button>
-    <button class="version-button" id="versionButton" type="button">v1.1.0<br><u>Changelog</u></button>
+    <button class="version-button" id="versionButton" type="button">v1.1.2<br><u>Changelog</u></button>
   </div>
 </header>
 
@@ -67,12 +67,20 @@
       <div class="section-title row-between"><div><span class="title-icon">▣</span><h2>Aktuelle Ziehungen</h2></div><button id="refreshData" class="link-button">Aktualisieren</button></div>
       <div class="draw-pair">
         <article class="draw-game lotto-draw">
-          <div class="draw-head"><strong>LOTTO 6aus49</strong><span class="frequency-badge">2× pro Woche</span></div>
+          <div class="draw-head"><strong>LOTTO 6aus49</strong><span class="frequency-badge">2× pro Woche · Mi + Sa</span></div>
+          <div class="jackpot-row">
+            <div><small>Aktueller Jackpot</small><strong id="lottoJackpot">wird geladen…</strong></div>
+            <div><small>Maximalgewinn</small><b>50 Mio. €</b></div>
+          </div>
           <div id="lottoCurrent" class="current-two"></div>
           <div class="next-draw" id="lottoNext">Mittwoch 18:25 · Samstag 19:25</div>
         </article>
         <article class="draw-game euro-draw">
-          <div class="draw-head"><strong>EUROJACKPOT</strong><span class="frequency-badge">2× pro Woche</span></div>
+          <div class="draw-head"><strong>EUROJACKPOT</strong><span class="frequency-badge">2× pro Woche · Di + Fr</span></div>
+          <div class="jackpot-row">
+            <div><small>Aktueller Jackpot</small><strong id="euroJackpot">wird geladen…</strong></div>
+            <div><small>Maximalgewinn</small><b>120 Mio. €</b></div>
+          </div>
           <div id="euroCurrent" class="current-two"></div>
           <div class="next-draw" id="euroNext">Dienstag · Freitag</div>
         </article>
@@ -118,15 +126,27 @@
   <section class="responsibility-strip">
     <div class="warning-symbol">!</div>
     <div><strong>Wichtiger Hinweis</strong><p>Sieh deinen Einsatz als verloren an, bevor du tippst. Kein System, keine Statistik und kein Generator können die Gewinnchance erhöhen.</p><b>Jackpot-Chance LOTTO 6aus49: 1 : 139.838.160</b><br><b>Jackpot-Chance Eurojackpot: ca. 1 : 140 Mio.</b></div>
-    <div class="comparison"><strong>Zum Vergleich</strong><p>Rund 140 Millionen Pfandflaschen à 25 cm übereinander ergäben etwa 35 Millionen Kilometer. Irgendwo in diesem Stapel wäre genau eine die richtige.</p></div>
+    <div class="comparison"><strong>Wie klein ist 1 zu 139.838.160?</strong>
+      <p>Stell dir vor, genau eine Spielquittung führt zum Jackpot. Diese Quittung liegt in einem von rund <b>140 Millionen Smart Fortwo der zweiten Generation</b> mit einer Fahrzeuglänge von jeweils etwa <b>2,70 Metern</b>.</p>
+      <p>Stellen wir alle Fahrzeuge <b>Stoßstange an Stoßstange</b> hintereinander, entsteht eine Reihe von ungefähr <b>378.000 Kilometern</b>. Der Mond ist durchschnittlich rund <b>384.400 Kilometer</b> von der Erde entfernt. Die 140 Millionen Smart würden also fast von der Erde bis zum Mond reichen.</p>
+      <p>Irgendwo in dieser gewaltigen Fahrzeugreihe befindet sich genau <b>ein einziger Smart mit der Jackpot-Quittung</b>. Genau diesen einen müsstest du erwischen.</p>
+      <p>Diese Größenordnung gilt für beide Lotterien: LOTTO 6aus49 mit <b>6 Richtigen + Superzahl</b> und Eurojackpot mit <b>5 Hauptzahlen + 2 Eurozahlen</b>. Bei beiden beträgt die Jackpot-Chance <b>1 zu 139.838.160</b>. Mit einem einzelnen Tipp liegt die Wahrscheinlichkeit, den Jackpot nicht zu treffen, bei rund <b>99,9999993&nbsp;%</b>.</p>
+      <p>Trotzdem werden Jackpots tatsächlich gewonnen. Eine extrem geringe Wahrscheinlichkeit bedeutet nicht unmöglich. Wer keinen Tipp abgibt, kann keinen Jackpot gewinnen. Wer spielt, sollte jeden Einsatz von Anfang an als vollständig verlorenes Geld betrachten und ausschließlich Geld einsetzen, dessen Verlust problemlos akzeptiert werden kann.</p>
+    </div>
     <div class="help-contact"><strong>Hilfe bei Glücksspielsucht</strong><p>Kostenlose BIÖG-Beratung:</p><a href="tel:08001372700">0800 1 37 27 00</a><br><a href="https://www.check-dein-spiel.de/" target="_blank" rel="noopener">check-dein-spiel.de</a></div>
   </section>
 </main>
 
-<footer><span>© 2026 Lotto Zentrale</span><strong>Gute Unterhaltung – und verantwortungsvoll spielen.</strong><button id="footerVersion">Version 1.1.0 · Changelog</button></footer>
+<footer><span>© 2026 Lotto Zentrale</span><strong>Gute Unterhaltung – und verantwortungsvoll spielen.</strong><button id="footerVersion">Version 1.1.2 · Changelog</button></footer>
 
 <dialog id="changelogDialog">
   <div class="dialog-head"><div><small>VERSION</small><h2>Changelog</h2></div><button id="closeChangelog">×</button></div>
+  <div class="change"><b>v1.1.2</b><span>13.08.2026</span><ul>
+    <li>Flaschenvergleich durch Smart-Fortwo-II-Vergleich ersetzt</li>
+    <li>Rund 140 Mio. Fahrzeuge à ca. 2,70 m ergeben etwa 378.000 km – fast bis zum Mond</li>
+    <li>Identische Jackpot-Chance von LOTTO 6aus49 und Eurojackpot erklärt</li>
+    <li>Nicht-Jackpot-Wahrscheinlichkeit pro Einzeltipp mit rund 99,9999993 % ergänzt</li>
+  </ul></div>
   <div class="change"><b>v1.1.0</b><span>13.08.2026</span><ul><li>Komplettes Dashboard-Redesign nach dem neuen gelb-roten Entwurf</li><li>Eigenes SVG-Logo, Favicon und Web-App-Manifest ergänzt</li><li>Aktuelle Ziehungen beider Lotterien gleichzeitig sichtbar</li><li>Zwei Wochenziehungen je Lotterie deutlich hervorgehoben</li><li>LOTTO-6aus49-Liveparser überarbeitet</li><li>Mobile Layout vollständig neu aufgebaut</li><li>Zahlenfolgenfilter auf drei Stufen erweitert</li></ul></div>
   <div class="change"><b>v1.0.1</b><span>13.08.2026</span><ul><li>Bereich „Verantwortungsvoll spielen“</li><li>Gewinnwahrscheinlichkeit und Hilfsangebote ergänzt</li></ul></div>
   <div class="change"><b>v1.0.0</b><span>12.08.2026</span><ul><li>Erste Version mit Generator, Statistik und Live-Datenmodul</li></ul></div>

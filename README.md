@@ -1,4 +1,4 @@
-# Lotto Zentrale v1.1.0
+# Lotto Zentrale v1.1.2
 
 Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 
@@ -24,3 +24,15 @@ Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 ## Ziehungsrhythmus
 - LOTTO 6aus49: Mittwoch 18:25 Uhr und Samstag 19:25 Uhr
 - Eurojackpot: Dienstag und Freitag
+
+## v1.1.1
+- LOTTO-6aus49-Liveabruf mit LOTTO.de-News-Fallback
+- nächste Ziehung inklusive Datum
+- aktueller Jackpot je Lotterie
+- Maximalgewinn: 50 Mio. € bei LOTTO 6aus49, 120 Mio. € beim Eurojackpot
+
+## v1.1.2
+- Smart-Fortwo-II-Vergleich für die Jackpot-Wahrscheinlichkeit
+- ca. 140 Mio. Fahrzeuge × 2,70 m ≈ 378.000 km
+- Vergleich mit ca. 384.400 km mittlerer Mondentfernung
+- gleiche Jackpot-Chance 1:139.838.160 bei LOTTO 6aus49 und Eurojackpot erklärt

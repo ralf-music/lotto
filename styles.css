@@ -2,3 +2,10 @@
 @media(max-width:1180px){.topbar{grid-template-columns:240px 1fr}.top-actions{display:none}.dashboard{grid-template-columns:280px 1fr}.right-column{grid-column:1/-1;grid-template-columns:1fr 1fr}.responsibility-strip{grid-template-columns:50px 1fr 1fr}.help-contact{grid-column:2/-1}.brand strong{font-size:1.6rem}}
 @media(max-width:800px){.topbar{position:static;grid-template-columns:1fr;padding:12px 14px;gap:10px}.brand{justify-content:center}.brand-logo{width:50px;height:50px}.game-switch{width:100%}.game-tab{flex:1;padding:13px 8px;font-size:.88rem}.dashboard{display:block;padding:0 10px;margin:10px auto}.generator-card,.draws-card,.history-card,.stats-card,.responsible-mini,.responsibility-strip{margin-bottom:10px}.draw-pair,.history-pair,.right-column{display:grid;grid-template-columns:1fr}.current-two{grid-template-columns:1fr}.current-draw{border-right:0;border-bottom:1px solid #efd681}.current-draw:last-child{border-bottom:0}.responsibility-strip{display:block}.warning-symbol{margin-bottom:10px}.comparison,.help-contact{border-left:0;border-top:1px solid #efd97a;padding:12px 0 0;margin-top:12px}footer{flex-direction:column;text-align:center;padding:16px}.stats-grid{grid-template-columns:repeat(5,1fr)}}
 @media(max-width:430px){.brand strong{font-size:1.45rem}.brand span{font-size:.68rem}.section-title h2{font-size:.95rem}.card{padding:13px}.stats-grid{gap:5px}.stat-number{padding:8px 2px}.draw-balls .ball{width:30px;height:30px}.tip-row{grid-template-columns:36px 1fr 26px}.tip-balls .ball{width:26px;height:26px;font-size:.68rem}}
+
+.jackpot-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;padding:10px 12px 11px;background:linear-gradient(90deg,#fff9d8,#fffef7);border-top:1px solid #f3de8c;border-bottom:1px solid #f3de8c}
+.jackpot-row>div{display:grid;gap:2px}
+.jackpot-row small{font-size:.66rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.jackpot-row strong{font-size:1.25rem;color:var(--red);line-height:1.1}
+.jackpot-row b{font-size:.88rem}
+@media(max-width:430px){.jackpot-row{grid-template-columns:1fr 1fr}.jackpot-row strong{font-size:1.08rem}}
