@@ -1,4 +1,4 @@
-# Lotto Zentrale v1.2.0
+# Lotto Zentrale v1.3.0
 
 Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 
@@ -44,3 +44,12 @@ Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 - lokale Speicherung der zuletzt geladenen Ziehungen
 - Wahrscheinlichkeitsvergleich einklappbar
 - Footer: © 2026 Lotto Zentrale by Snikki
+
+## v1.3.0
+- Installierbare PWA mit App-Name „Lotto Zentrale“
+- service-worker.js als bewusstes Network-only-Verhalten
+- App-Icons 192×192, 512×512 und Apple Touch Icon aus dem bestehenden SVG-Logo
+- Installationsbutton für unterstützte Browser
+- mobile Standalone-/Safe-Area-Optimierungen
+- Info-Dialog für die Erklärung des Statistik-Einflusses
+- neue Überschrift: „Wie hoch ist die Gewinnwahrscheinlichkeit tatsächlich?“

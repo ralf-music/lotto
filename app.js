@@ -1,4 +1,4 @@
-const VERSION="1.2.0", STORAGE_KEY="lottoZentraleSettingsV1", DRAW_CACHE_KEY="lottoZentraleDrawCacheV1";
+const VERSION="1.3.0", STORAGE_KEY="lottoZentraleSettingsV1", DRAW_CACHE_KEY="lottoZentraleDrawCacheV1";
 const GAME_CONFIG={lotto:{label:"LOTTO 6aus49",max:49,count:6,specialCount:0,specialMax:0},eurojackpot:{label:"EUROJACKPOT",max:50,count:5,specialCount:2,specialMax:12}};
 const FALLBACK_FREQ={lotto:Array.from({length:49},(_,i)=>({n:i+1,f:100+((i*17+11)%31)})),eurojackpot:Array.from({length:50},(_,i)=>({n:i+1,f:100+((i*13+7)%29)})),euro:Array.from({length:12},(_,i)=>({n:i+1,f:100+((i*9+3)%23)}))};
 const FALLBACK_DRAWS={lotto:[],eurojackpot:[]};
@@ -87,5 +87,41 @@ async function refreshLiveData(){
   renderDraws();renderStats()
 }
 function changeGame(game){state.game=game;state.locked.clear();$$('.game-tab').forEach(b=>b.classList.toggle('active',b.dataset.game===game));renderStats();generateTips()}
-function bind(){$$('.game-tab').forEach(b=>b.onclick=()=>changeGame(b.dataset.game));$("#tipsMinus").onclick=()=>{state.tipsCount=Math.max(1,state.tipsCount-1);syncControls();saveSettings();generateTips()};$("#tipsPlus").onclick=()=>{state.tipsCount=Math.min(6,state.tipsCount+1);syncControls();saveSettings();generateTips()};$("#generateButton").onclick=()=>generateTips();$("#regenerateUnlocked").onclick=()=>generateTips(true);$("#unlockAll").onclick=()=>{state.locked.clear();renderTips()};$("#refreshData").onclick=refreshLiveData;$("#statWeight").oninput=e=>$("#weightValue").textContent=`${e.target.value}%`;$("#statWeight").onchange=e=>{state.statWeight=+e.target.value;saveSettings();generateTips()};$$('input[name="spread"]').forEach(x=>x.onchange=e=>{state.spreadMode=e.target.value;saveSettings();generateTips()});$$('input[name="sequence"]').forEach(x=>x.onchange=e=>{state.sequenceMode=e.target.value;saveSettings();generateTips()});['avoidPatterns','balanceParity','balanceRange'].forEach(id=>$("#"+id).onchange=e=>{state[id]=e.target.checked;saveSettings();generateTips()});$$('.stats-tab').forEach(b=>b.onclick=()=>{state.statView=b.dataset.stat;$$('.stats-tab').forEach(x=>x.classList.toggle('active',x===b));renderStats()});const open=()=>$("#changelogDialog").showModal();$("#versionButton").onclick=open;$("#footerVersion").onclick=open;$("#closeChangelog").onclick=()=>$("#changelogDialog").close();$$('[data-scroll]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'}))}
-loadSettings();loadDrawCache();syncControls();bind();generateTips();renderStats();renderDraws();refreshLiveData();
+
+let deferredInstallPrompt=null;
+
+function setupPwaInstall(){
+  const installBtn=$("#installAppButton");
+
+  window.addEventListener("beforeinstallprompt",event=>{
+    event.preventDefault();
+    deferredInstallPrompt=event;
+    if(installBtn)installBtn.hidden=false;
+  });
+
+  if(installBtn){
+    installBtn.addEventListener("click",async()=>{
+      if(!deferredInstallPrompt)return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt=null;
+      installBtn.hidden=true;
+    });
+  }
+
+  window.addEventListener("appinstalled",()=>{
+    deferredInstallPrompt=null;
+    if(installBtn)installBtn.hidden=true;
+  });
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+      navigator.serviceWorker.register("/service-worker.js").catch(()=>{});
+    });
+  }
+}
+
+function bind(){$$('.game-tab').forEach(b=>b.onclick=()=>changeGame(b.dataset.game));$("#tipsMinus").onclick=()=>{state.tipsCount=Math.max(1,state.tipsCount-1);syncControls();saveSettings();generateTips()};$("#tipsPlus").onclick=()=>{state.tipsCount=Math.min(6,state.tipsCount+1);syncControls();saveSettings();generateTips()};$("#generateButton").onclick=()=>generateTips();$("#regenerateUnlocked").onclick=()=>generateTips(true);$("#unlockAll").onclick=()=>{state.locked.clear();renderTips()};$("#refreshData").onclick=refreshLiveData;$("#statWeight").oninput=e=>$("#weightValue").textContent=`${e.target.value}%`;$("#statWeight").onchange=e=>{state.statWeight=+e.target.value;saveSettings();generateTips()};$$('input[name="spread"]').forEach(x=>x.onchange=e=>{state.spreadMode=e.target.value;saveSettings();generateTips()});$$('input[name="sequence"]').forEach(x=>x.onchange=e=>{state.sequenceMode=e.target.value;saveSettings();generateTips()});['avoidPatterns','balanceParity','balanceRange'].forEach(id=>$("#"+id).onchange=e=>{state[id]=e.target.checked;saveSettings();generateTips()});$$('.stats-tab').forEach(b=>b.onclick=()=>{state.statView=b.dataset.stat;$$('.stats-tab').forEach(x=>x.classList.toggle('active',x===b));renderStats()});const open=()=>$("#changelogDialog").showModal();$("#versionButton").onclick=open;$("#footerVersion").onclick=open;$("#closeChangelog").onclick=()=>$("#changelogDialog").close();
+  if($("#statsInfoButton"))$("#statsInfoButton").onclick=()=>$("#generatorInfoDialog").showModal();
+  if($("#closeGeneratorInfo"))$("#closeGeneratorInfo").onclick=()=>$("#generatorInfoDialog").close();$$('[data-scroll]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'}))}
+loadSettings();loadDrawCache();syncControls();bind();setupPwaInstall();generateTips();renderStats();renderDraws();refreshLiveData();

@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#ffd600">
 <title>Lotto Zentrale</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="application-name" content="Lotto Zentrale">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Lotto Zentrale">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -20,6 +25,7 @@
     <button class="game-tab euro" data-game="eurojackpot" type="button">EUROJACKPOT</button>
   </nav>
   <div class="top-actions">
+    <button class="nav-action install-action" id="installAppButton" type="button" hidden><span>⇩</span>App installieren</button>
     <button class="nav-action" data-scroll="statsPanel" type="button"><span>▥</span>Statistik</button>
     <button class="nav-action" data-scroll="responsiblePanel" type="button"><span>?</span>Hilfe</button>
     <button class="version-button" id="versionButton" type="button">v1.1.2<br><u>Changelog</u></button>
@@ -34,7 +40,7 @@
       <div class="stepper"><button id="tipsMinus">−</button><strong id="tipsCount">6</strong><button id="tipsPlus">+</button></div>
     </div>
     <div class="field-block">
-      <label>Statistik-Einfluss <span class="help-dot" title="Historische Häufigkeit wird stärker oder schwächer gewichtet.">?</span></label>
+      <label>Statistik-Einfluss <button class="info-button" id="statsInfoButton" type="button" aria-label="Statistik-Einfluss erklären">i</button></label>
       <div class="range-row"><input id="statWeight" type="range" min="0" max="100" step="5" value="65"><strong id="weightValue">65%</strong></div>
       <div class="range-labels"><span>Zufall</span><span>Statistik</span></div>
     </div>
@@ -129,7 +135,7 @@
     <details class="comparison comparison-collapsible">
       <summary>
         <span>
-          <strong>Wie klein ist 1 zu 139.838.160?</strong>
+          <strong>Wie hoch ist die Gewinnwahrscheinlichkeit tatsächlich?</strong>
           <small>140 Millionen Smart Fortwo würden fast bis zum Mond reichen – und nur in einem liegt die Jackpot-Quittung.</small>
         </span>
         <b class="summary-action">Vergleich anzeigen</b>
@@ -146,11 +152,24 @@
   </section>
 </main>
 
-<footer><span>© 2026 Lotto Zentrale by Snikki</span><strong>Gute Unterhaltung – und verantwortungsvoll spielen.</strong><button id="footerVersion">Version 1.2.0 · Changelog</button></footer>
+<footer><span>© 2026 Lotto Zentrale by Snikki</span><strong>Gute Unterhaltung – und verantwortungsvoll spielen.</strong><button id="footerVersion">Version 1.3.0 · Changelog</button></footer>
+
+
+<dialog id="generatorInfoDialog" class="info-dialog">
+  <div class="dialog-head">
+    <div><small>TIPPGNERATOR</small><h2>Was bedeutet die statistische Gewichtung?</h2></div>
+    <button id="closeGeneratorInfo" type="button" aria-label="Fenster schließen">×</button>
+  </div>
+  <div class="info-dialog-body">
+    <p>Der Generator kann Zahlen bevorzugen, die in den geladenen Statistiken häufiger gezogen wurden. Je höher der Statistik-Einfluss eingestellt ist, desto stärker fließen diese historischen Häufigkeiten in die Auswahl ein.</p>
+    <p><strong>Beispiel: 65&nbsp;%</strong> bedeutet nicht, dass eine häufig gezogene Zahl eine 65-prozentige Chance hat. Die Einstellung steuert lediglich, wie stark der Generator historische Häufigkeiten gegenüber reinem Zufall bevorzugt.</p>
+    <p>Vergangene Ziehungen können zukünftige Ergebnisse nicht vorhersagen. Jede gültige Zahlenkombination hat bei der nächsten Ziehung mathematisch die gleiche Chance.</p>
+  </div>
+</dialog>
 
 <dialog id="changelogDialog">
   <div class="dialog-head"><div><small>VERSION</small><h2>Changelog</h2></div><button id="closeChangelog">×</button></div>
-  <div class="change"><b>v1.2.0</b><span>13.08.2026</span><ul>
+  <div class="change"><b>v1.3.0</b><span>13.08.2026</span><ul>
     <li>LOTTO 6aus49 nutzt ZDFtext für die aktuellen Mittwoch-/Samstag-Ziehungen</li>
     <li>WestLotto als zusätzlicher Fallback und Jackpot-Quelle integriert</li>
     <li>Smart-Fortwo-Wahrscheinlichkeitsvergleich einklappbar gemacht</li>
