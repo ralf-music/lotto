@@ -1,4 +1,4 @@
-# Lotto Zentrale v1.4.0
+# Lotto Zentrale v1.3.0
 
 Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 
@@ -53,13 +53,3 @@ Responsive Lotto-Dashboard für LOTTO 6aus49 und Eurojackpot.
 - mobile Standalone-/Safe-Area-Optimierungen
 - Info-Dialog für die Erklärung des Statistik-Einflusses
 - neue Überschrift: „Wie hoch ist die Gewinnwahrscheinlichkeit tatsächlich?“
-
-## v1.3.1
-- sichtbare Versionsanzeige korrigiert
-- Versionsbutton und Changelog synchronisiert
-
-## v1.4.0
-- Superzahl-Häufigkeit 0–9
-- Eurozahlen-Häufigkeit 1–12
-- Live-Datenstand/Quellenhinweis
-- Tippfehler TIPPGENERATOR korrigiert

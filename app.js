@@ -1,8 +1,8 @@
-const VERSION="1.4.0", STORAGE_KEY="lottoZentraleSettingsV1", DRAW_CACHE_KEY="lottoZentraleDrawCacheV1";
+const VERSION="1.3.0", STORAGE_KEY="lottoZentraleSettingsV1", DRAW_CACHE_KEY="lottoZentraleDrawCacheV1";
 const GAME_CONFIG={lotto:{label:"LOTTO 6aus49",max:49,count:6,specialCount:0,specialMax:0},eurojackpot:{label:"EUROJACKPOT",max:50,count:5,specialCount:2,specialMax:12}};
 const FALLBACK_FREQ={lotto:Array.from({length:49},(_,i)=>({n:i+1,f:100+((i*17+11)%31)})),eurojackpot:Array.from({length:50},(_,i)=>({n:i+1,f:100+((i*13+7)%29)})),euro:Array.from({length:12},(_,i)=>({n:i+1,f:100+((i*9+3)%23)}))};
 const FALLBACK_DRAWS={lotto:[],eurojackpot:[]};
-let state={game:"lotto",tipsCount:6,statWeight:65,spreadMode:"reduced",sequenceMode:"two",avoidPatterns:true,balanceParity:true,balanceRange:true,statView:"hot",locked:new Set(),tips:[],data:structuredClone(FALLBACK_DRAWS),freq:structuredClone(FALLBACK_FREQ),jackpots:{lotto:null,eurojackpot:null},sources:{lotto:"",eurojackpot:""},specialStats:{lotto:null,eurojackpot:null}};
+let state={game:"lotto",tipsCount:6,statWeight:65,spreadMode:"reduced",sequenceMode:"two",avoidPatterns:true,balanceParity:true,balanceRange:true,statView:"hot",locked:new Set(),tips:[],data:structuredClone(FALLBACK_DRAWS),freq:structuredClone(FALLBACK_FREQ),jackpots:{lotto:null,eurojackpot:null},sources:{lotto:"",eurojackpot:""}};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 function mergeDraws(current,incoming){
   const all=[...(incoming||[]),...(current||[])],seen=new Set();
@@ -37,15 +37,6 @@ function generateOne(cfg,used){const freq=normalizeFreq(state.freq[state.game],c
 function generateTips(onlyUnlocked=false){const cfg=GAME_CONFIG[state.game],used=new Map();if(onlyUnlocked)state.tips.forEach((t,i)=>{if(state.locked.has(i))t.numbers.forEach(n=>used.set(n,(used.get(n)||0)+1))});else state.locked.clear();const next=[];for(let i=0;i<state.tipsCount;i++){if(onlyUnlocked&&state.locked.has(i)&&state.tips[i])next[i]=state.tips[i];else{const t=generateOne(cfg,used);next[i]=t;t.numbers.forEach(n=>used.set(n,(used.get(n)||0)+1))}}state.tips=next;renderTips()}
 function ball(n,special=false){return `<span class="ball ${special?"special":""}">${n}</span>`}
 function renderTips(){$("#tipsContainer").innerHTML=state.tips.map((t,i)=>`<div class="tip-row"><div class="tip-label">${i+1}.</div><div class="tip-balls">${t.numbers.map(n=>ball(n)).join("")}${t.special.length?'<span>+</span>'+t.special.map(n=>ball(n,true)).join(""):""}</div><button class="lock-button ${state.locked.has(i)?"locked":""}" data-lock="${i}">${state.locked.has(i)?"●":"○"}</button></div>`).join("");$$('[data-lock]').forEach(b=>b.onclick=()=>{const i=+b.dataset.lock;state.locked.has(i)?state.locked.delete(i):state.locked.add(i);renderTips()})}
-function renderSpecialStats(){
-  const isLotto=state.game==="lotto",stat=state.specialStats[isLotto?"lotto":"eurojackpot"],grid=$("#specialStatsGrid");
-  $("#specialStatsEyebrow").textContent=isLotto?"SUPERZAHL":"EUROZAHLEN";
-  $("#specialStatsTitle").textContent=isLotto?"Superzahl 0–9":"Eurozahlen 1–12"; grid.innerHTML="";
-  const start=isLotto?0:1,end=isLotto?9:12;
-  for(let n=start;n<=end;n++){const c=stat?.counts?.[String(n)],el=document.createElement("div");el.className="special-stat";el.innerHTML=`<b>${n}</b><span>${Number.isFinite(c)?`${c}×`:"–"}</span>`;grid.appendChild(el)}
-  $("#specialStatsStatus").textContent=stat?.updatedAt?`Stand: ${stat.updatedAt}`:"Keine Live-Statistik verfügbar";
-  $("#specialStatsNote").textContent=stat?.note||(isLotto?"Superzahl-Statistik seit 2020.":"Offizielle Eurozahlen-Statistik.");
-}
 function renderStats(){const list=normalizeFreq(state.freq[state.game],GAME_CONFIG[state.game].max).sort((a,b)=>b.f-a.f);let sel;if(state.statView==="hot")sel=list.slice(0,10);else if(state.statView==="cold")sel=[...list].reverse().slice(0,10);else sel=list.slice(Math.max(0,Math.floor((list.length-10)/2)),Math.max(0,Math.floor((list.length-10)/2))+10);$("#statsGrid").innerHTML=sel.map(x=>`<div class="stat-number"><b>${x.n}</b><small>${x.f}×</small></div>`).join("");$("#statsGameLabel").textContent=GAME_CONFIG[state.game].label}
 function prettyDay(date){const clean=String(date||"").replace(/\s+/g,"");let d,mn,y;if(clean.includes(".")){[d,mn,y]=clean.split(".").map(Number)}else{[y,mn,d]=clean.split("-").map(Number)}const dt=new Date(y,mn-1,d);return new Intl.DateTimeFormat("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"}).format(dt)}
 function drawBlock(d,game){if(!d)return '<div class="current-draw"><div class="draw-date">Noch keine Daten</div></div>';return `<div class="current-draw"><div class="draw-date">${prettyDay(d.date)}</div><div class="draw-balls">${d.numbers.map(n=>ball(n)).join("")}${(d.special||[]).map(n=>ball(n,true)).join("")}</div>${game==='eurojackpot'&&d.special?.length?'<div class="special-label">rote Kugeln = Eurozahlen</div>':''}</div>`}
@@ -87,7 +78,7 @@ async function refreshLiveData(){
       state.jackpots.lotto=data.jackpots.lotto||state.jackpots.lotto;
       state.jackpots.eurojackpot=data.jackpots.eurojackpot||state.jackpots.eurojackpot;
     }
-    if(data.sources)state.sources={...state.sources,...data.sources};if(data.specialStats){state.specialStats.lotto=data.specialStats.lotto||state.specialStats.lotto;state.specialStats.eurojackpot=data.specialStats.eurojackpot||state.specialStats.eurojackpot;}
+    if(data.sources)state.sources={...state.sources,...data.sources};
     saveDrawCache();
     $("#dataStatus").textContent=`Datenstand: ${data.updatedAt||"aktuell"} · ${data.source||"Live-Daten"}`;
   }catch(e){
