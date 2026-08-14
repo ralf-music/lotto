@@ -4,7 +4,7 @@ const WEST_LOTTO="https://www.westlotto.de/lotto-6aus49/gewinnzahlen/gewinnzahle
 const EURO_URL="https://www.eurojackpot.de/";
 
 const headers={
-  "user-agent":"Mozilla/5.0 (compatible; LottoZentrale/1.2.0)",
+  "user-agent":"Mozilla/5.0 (compatible; LottoZentrale/1.4.0)",
   "accept-language":"de-DE,de;q=0.9",
   "accept":"text/html,application/xhtml+xml"
 };
@@ -99,10 +99,27 @@ function parseEuroJackpot(html){
   return null;
 }
 
+
+const EURO_STATS_URL="https://www.eurojackpot.de/statistik";
+function zeroCounts(a,b){const o={};for(let i=a;i<=b;i++)o[String(i)]=0;return o}
+function parseEuroSpecialStats(html){
+  const text=strip(html),pos=text.search(/2\s+aus\s+12|Eurozahlen/i);if(pos<0)return null;
+  const sec=text.slice(pos,pos+12000),counts=zeroCounts(1,12);let found=0;
+  const rx=/\b(\d{1,2})\b\s*(?:[:\-]|wurde)?\s*(\d{2,5})\s*(?:mal|x|Ziehungen)/gi;let m;
+  while((m=rx.exec(sec))){const n=+m[1],c=+m[2];if(n>=1&&n<=12&&c>0&&!counts[String(n)]){counts[String(n)]=c;found++}}
+  return found===12?counts:null;
+}
+function parseSuperzahlStatsFromArchive(html){
+  const text=strip(html),counts=zeroCounts(0,9);let total=0,m;
+  const rx=/(\d{2}\.\d{2}\.(20(?:2[0-9])))[\s\S]{0,350}?Superzahl\s+(\d)/gi;
+  while((m=rx.exec(text))){if(+m[2]>=2020){counts[String(+m[3])]++;total++}}
+  return total?{counts,total}:null;
+}
+
 exports.handler=async()=>{
   try{
-    const [wed,sat,west,euro]=await Promise.allSettled([
-      fetchText(ZDF_WED),fetchText(ZDF_SAT),fetchText(WEST_LOTTO),fetchText(EURO_URL)
+    const [wed,sat,west,euro,euroStatsPage]=await Promise.allSettled([
+      fetchText(ZDF_WED),fetchText(ZDF_SAT),fetchText(WEST_LOTTO),fetchText(EURO_URL),fetchText(EURO_STATS_URL)
     ]);
 
     const zdfDraws=[];
@@ -115,6 +132,11 @@ exports.handler=async()=>{
 
     const lottoJackpot=west.status==="fulfilled"?parseWestLottoJackpot(west.value):null;
     const euroJackpot=euro.status==="fulfilled"?parseEuroJackpot(euro.value):null;
+    const lottoParsed=west.status==="fulfilled"?parseSuperzahlStatsFromArchive(west.value):null;
+    const euroCounts=euroStatsPage.status==="fulfilled"?parseEuroSpecialStats(euroStatsPage.value):null;
+    const statDate=new Date().toLocaleDateString("de-DE",{timeZone:"Europe/Berlin"});
+    const lottoSpecialStats=lottoParsed?{counts:lottoParsed.counts,total:lottoParsed.total,updatedAt:statDate,note:"Superzahl-Häufigkeit aus verfügbaren WestLotto-Daten seit 2020."}:null;
+    const euroSpecialStats=euroCounts?{counts:euroCounts,updatedAt:statDate,note:"Eurozahlen-Häufigkeit aus der offiziellen Eurojackpot-Statistik."}:null;
 
     return{
       statusCode:200,
@@ -134,6 +156,7 @@ exports.handler=async()=>{
           lotto:lottoJackpot||{display:"wird ermittelt",max:"50 Mio. €"},
           eurojackpot:euroJackpot||{display:"wird ermittelt",max:"120 Mio. €"}
         },
+        specialStats:{lotto:lottoSpecialStats,eurojackpot:euroSpecialStats},
         freq:null,
         debug:{
           zdfWednesday:wed.status,
